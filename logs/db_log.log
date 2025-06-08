@@ -1,0 +1,135 @@
+INFO   | 2025-06-07 15:16:44 | app.database         | 17 | Connected to DB
+INFO   | 2025-06-07 15:16:57 | app.database         | 17 | Connected to DB
+INFO   | 2025-06-07 15:23:42 | app.database         | 16 | SQLAlchemy engine created
+INFO   | 2025-06-07 15:25:32 | app.database         | 16 | SQLAlchemy engine created
+INFO   | 2025-06-07 15:26:18 | app.database         | 16 | SQLAlchemy engine created
+INFO   | 2025-06-07 15:26:51 | app.database         | 24 | Database session started
+INFO   | 2025-06-07 15:26:51 | app.database         | 31 | Database session closed
+INFO   | 2025-06-07 16:13:04 | app.database         | 16 | SQLAlchemy engine created
+INFO   | 2025-06-07 16:13:11 | app.database         | 24 | Database session started
+INFO   | 2025-06-07 16:13:11 | app.database         | 31 | Database session closed
+INFO   | 2025-06-07 16:22:06 | app.database         | 16 | SQLAlchemy engine created
+INFO   | 2025-06-07 16:22:15 | app.database         | 16 | SQLAlchemy engine created
+INFO   | 2025-06-07 16:30:49 | app.database         | 16 | SQLAlchemy engine created
+INFO   | 2025-06-07 16:33:04 | app.database         | 16 | SQLAlchemy engine created
+INFO   | 2025-06-07 16:34:34 | app.database         | 16 | SQLAlchemy engine created
+INFO   | 2025-06-07 16:36:20 | app.database         | 16 | SQLAlchemy engine created
+INFO   | 2025-06-07 16:37:26 | app.database         | 16 | SQLAlchemy engine created
+INFO   | 2025-06-07 16:37:37 | app.database         | 16 | SQLAlchemy engine created
+INFO   | 2025-06-07 16:38:20 | app.database         | 24 | Database session started
+ERROR  | 2025-06-07 16:38:20 | app.database         | 28 | Error during DB session
+Traceback (most recent call last):
+
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 1002, in _bootstrap
+    self._bootstrap_inner()
+    │    └ <function Thread._bootstrap_inner at 0x000001FC4E625BC0>
+    └ <WorkerThread(AnyIO worker thread, started 26912)>
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 1045, in _bootstrap_inner
+    self.run()
+    │    └ <function WorkerThread.run at 0x000001FC525AFA60>
+    └ <WorkerThread(AnyIO worker thread, started 26912)>
+  File "C:\Users\saram\OneDrive\Desktop\GE Vernova-Python\fundoo-notes\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 967, in run
+    result = context.run(func, *args)
+             │       │   │      └ (<class 'passlib.exc.MissingBackendError'>, MissingBackendError("bcrypt: no backends available -- recommend you install one (...
+             │       │   └ <bound method _GeneratorContextManager.__exit__ of <contextlib._GeneratorContextManager object at 0x000001FC5257E490>>
+             │       └ <method 'run' of '_contextvars.Context' objects>
+             └ <_contextvars.Context object at 0x000001FC525A6AC0>
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\contextlib.py", line 158, in __exit__
+    self.gen.throw(typ, value, traceback)
+    │    │   │     │    │      └ <traceback object at 0x000001FC52611D00>
+    │    │   │     │    └ MissingBackendError("bcrypt: no backends available -- recommend you install one (e.g. 'pip install bcrypt')")
+    │    │   │     └ <class 'passlib.exc.MissingBackendError'>
+    │    │   └ <method 'throw' of 'generator' objects>
+    │    └ <generator object get_db at 0x000001FC52597840>
+    └ <contextlib._GeneratorContextManager object at 0x000001FC5257E490>
+
+> File "C:\Users\saram\OneDrive\Desktop\GE Vernova-Python\fundoo-notes\app\database.py", line 26, in get_db
+    yield db
+          └ <sqlalchemy.orm.session.Session object at 0x000001FC525CED90>
+
+  File "C:\Users\saram\OneDrive\Desktop\GE Vernova-Python\fundoo-notes\.venv\Lib\site-packages\fastapi\concurrency.py", line 27, in contextmanager_in_threadpool
+    yield await run_in_threadpool(cm.__enter__)
+                │                 │  └ <function _GeneratorContextManager.__enter__ at 0x000001FC4E810180>
+                │                 └ <contextlib._GeneratorContextManager object at 0x000001FC5257E490>
+                └ <function run_in_threadpool at 0x000001FC4F3A3600>
+  File "C:\Users\saram\OneDrive\Desktop\GE Vernova-Python\fundoo-notes\.venv\Lib\site-packages\fastapi\routing.py", line 301, in app
+    raw_response = await run_endpoint_function(
+                         └ <function run_endpoint_function at 0x000001FC4E8105E0>
+  File "C:\Users\saram\OneDrive\Desktop\GE Vernova-Python\fundoo-notes\.venv\Lib\site-packages\fastapi\routing.py", line 214, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+                 │                 │         │       └ {'db': <sqlalchemy.orm.session.Session object at 0x000001FC525CED90>, 'request': User(name='Aleena', username='aleena@yahoo.c...
+                 │                 │         └ <function create_user at 0x000001FC5247B420>
+                 │                 └ Dependant(path_params=[], query_params=[], header_params=[], cookie_params=[], body_params=[ModelField(field_info=Body(Pydant...
+                 └ <function run_in_threadpool at 0x000001FC4F3A3600>
+  File "C:\Users\saram\OneDrive\Desktop\GE Vernova-Python\fundoo-notes\.venv\Lib\site-packages\starlette\concurrency.py", line 37, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+                 │     │         │        └ functools.partial(<function create_user at 0x000001FC5247B420>, db=<sqlalchemy.orm.session.Session object at 0x000001FC525CED...
+                 │     │         └ <function run_sync at 0x000001FC4F3A3B00>
+                 │     └ <module 'anyio.to_thread' from 'C:\\Users\\saram\\OneDrive\\Desktop\\GE Vernova-Python\\fundoo-notes\\.venv\\Lib\\site-packag...
+                 └ <module 'anyio' from 'C:\\Users\\saram\\OneDrive\\Desktop\\GE Vernova-Python\\fundoo-notes\\.venv\\Lib\\site-packages\\anyio\...
+  File "C:\Users\saram\OneDrive\Desktop\GE Vernova-Python\fundoo-notes\.venv\Lib\site-packages\anyio\to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+                 └ <function get_async_backend at 0x000001FC4F3D4680>
+  File "C:\Users\saram\OneDrive\Desktop\GE Vernova-Python\fundoo-notes\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 2470, in run_sync_in_worker_thread
+    return await future
+                 └ <Future finished exception=MissingBackendError("bcrypt: no backends available -- recommend you install one (e.g. 'pip install...
+  File "C:\Users\saram\OneDrive\Desktop\GE Vernova-Python\fundoo-notes\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 967, in run
+    result = context.run(func, *args)
+             │       │   │      └ (<class 'passlib.exc.MissingBackendError'>, MissingBackendError("bcrypt: no backends available -- recommend you install one (...
+             │       │   └ <bound method _GeneratorContextManager.__exit__ of <contextlib._GeneratorContextManager object at 0x000001FC5257E490>>
+             │       └ <method 'run' of '_contextvars.Context' objects>
+             └ <_contextvars.Context object at 0x000001FC525A6AC0>
+
+  File "C:\Users\saram\OneDrive\Desktop\GE Vernova-Python\fundoo-notes\app\routes\user.py", line 16, in create_user
+    password=Hash.bcrypt(request.password),
+             │    │      │       └ 'password'
+             │    │      └ User(name='Aleena', username='aleena@yahoo.com', password='password', dob=datetime.date(2025, 6, 7), gender=<GenderEnum.FEMAL...
+             │    └ <staticmethod(<function Hash.bcrypt at 0x000001FC5255FE20>)>
+             └ <class 'app.hashing.Hash'>
+
+  File "C:\Users\saram\OneDrive\Desktop\GE Vernova-Python\fundoo-notes\app\hashing.py", line 9, in bcrypt
+    return pwd_cxt.hash(password)
+           │       │    └ 'password'
+           │       └ <function CryptContext.hash at 0x000001FC5255C180>
+           └ <CryptContext at 0x1fc5240df90>
+
+  File "C:\Users\saram\OneDrive\Desktop\GE Vernova-Python\fundoo-notes\.venv\Lib\site-packages\passlib\context.py", line 2258, in hash
+    return record.hash(secret, **kwds)
+           │      │    │         └ {}
+           │      │    └ 'password'
+           │      └ <classmethod(<function GenericHandler.hash at 0x000001FC525199E0>)>
+           └ <class 'passlib.handlers.bcrypt.<customized bcrypt hasher>'>
+  File "C:\Users\saram\OneDrive\Desktop\GE Vernova-Python\fundoo-notes\.venv\Lib\site-packages\passlib\utils\handlers.py", line 779, in hash
+    self.checksum = self._calc_checksum(secret)
+    │    │          │    │              └ 'password'
+    │    │          │    └ <function _NoBackend._calc_checksum at 0x000001FC5255ECA0>
+    │    │          └ <passlib.handlers.bcrypt.<customized bcrypt hasher> object at 0x000001FC525BEE10>
+    │    └ None
+    └ <passlib.handlers.bcrypt.<customized bcrypt hasher> object at 0x000001FC525BEE10>
+  File "C:\Users\saram\OneDrive\Desktop\GE Vernova-Python\fundoo-notes\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 591, in _calc_checksum
+    self._stub_requires_backend()
+    │    └ <classmethod(<function BackendMixin._stub_requires_backend at 0x000001FC5251BD80>)>
+    └ <passlib.handlers.bcrypt.<customized bcrypt hasher> object at 0x000001FC525BEE10>
+  File "C:\Users\saram\OneDrive\Desktop\GE Vernova-Python\fundoo-notes\.venv\Lib\site-packages\passlib\utils\handlers.py", line 2254, in _stub_requires_backend
+    cls.set_backend()
+    │   └ <classmethod(<function BackendMixin.set_backend at 0x000001FC5251BB00>)>
+    └ <class 'passlib.handlers.bcrypt.<customized bcrypt hasher>'>
+  File "C:\Users\saram\OneDrive\Desktop\GE Vernova-Python\fundoo-notes\.venv\Lib\site-packages\passlib\utils\handlers.py", line 2156, in set_backend
+    return owner.set_backend(name, dryrun=dryrun)
+           │     │           │            └ False
+           │     │           └ 'any'
+           │     └ <classmethod(<function BackendMixin.set_backend at 0x000001FC5251BB00>)>
+           └ <class 'passlib.handlers.bcrypt.bcrypt'>
+  File "C:\Users\saram\OneDrive\Desktop\GE Vernova-Python\fundoo-notes\.venv\Lib\site-packages\passlib\utils\handlers.py", line 2176, in set_backend
+    raise default_error
+          └ MissingBackendError("bcrypt: no backends available -- recommend you install one (e.g. 'pip install bcrypt')")
+
+passlib.exc.MissingBackendError: bcrypt: no backends available -- recommend you install one (e.g. 'pip install bcrypt')
+INFO   | 2025-06-07 16:38:20 | app.database         | 31 | Database session closed
+INFO   | 2025-06-07 16:39:17 | app.database         | 16 | SQLAlchemy engine created
+INFO   | 2025-06-07 16:39:22 | app.database         | 24 | Database session started
+INFO   | 2025-06-07 16:39:22 | app.database         | 29 | Database session closed
+INFO   | 2025-06-07 16:39:49 | app.database         | 24 | Database session started
+INFO   | 2025-06-07 16:39:50 | app.database         | 29 | Database session closed
+INFO   | 2025-06-07 16:40:31 | app.database         | 24 | Database session started
+INFO   | 2025-06-07 16:40:31 | app.database         | 29 | Database session closed

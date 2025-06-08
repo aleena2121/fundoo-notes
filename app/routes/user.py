@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from app.database import get_db  
 from app.schemas import user_schema 
 from app.models import user_model
+from app.hashing import Hash
 
 router = APIRouter(prefix="/user", tags=["Users"])
 
@@ -12,7 +13,7 @@ def create_user(request: user_schema.User, db: Session = Depends(get_db)):
     db_user = user_model.User(
         name=request.name,
         username=request.username,
-        password=request.password,  
+        password=Hash.bcrypt(request.password),  
         dob=request.dob,
         gender=request.gender
     )
