@@ -1,10 +1,13 @@
 from datetime import date, datetime
-from app.database import Base
+from typing import Optional
+
 from sqlalchemy.dialects.postgresql import ENUM as SQLEnum
-from sqlalchemy.orm import Mapped
-from sqlalchemy.orm import mapped_column
+from sqlalchemy.orm import Mapped, mapped_column
+
+from app.database import Base
+
 from . import enum
-    
+
 
 class User(Base):
     __tablename__ = 'users'

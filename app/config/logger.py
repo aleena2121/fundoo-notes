@@ -1,25 +1,8 @@
-from loguru import logger
 import json
 import os
 
-# class Logger:
-#     @staticmethod
-#     def db_logger():
-#         logger.remove()
+from loguru import logger
 
-#         logger.add(
-#             "logs/db_log.log",
-#             format=("{level:<6} | {time:YYYY-MM-DD HH:mm:ss} | {name:<20} | {line} | {message} "),
-#             rotation="1 MB",
-#             compression='zip',
-#             backtrace=True,
-#             diagnose=True 
-#         )
-
-#         logger.info("Logger initialized successfully!!!")
-        
-#         return logger
-    
 
 class Logger:
 

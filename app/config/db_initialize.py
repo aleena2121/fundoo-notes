@@ -1,5 +1,5 @@
 from . import settings
-# from database import Base, engine
+
 
 class Settings:
     DB_USER=settings.DB_USER

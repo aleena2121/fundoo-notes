@@ -1,8 +1,9 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+
 from app.config import db_initialize
-from app.config.logger import Logger 
+from app.config.logger import Logger
 
 logger = Logger.initialize_from_json()
 
