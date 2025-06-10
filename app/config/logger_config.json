@@ -1,14 +1,14 @@
 {
   "handlers": [
     {
-      "sink": "logs/db_log.log",
+      "sink": "logs/config_log.log",
       "format": "{level:<6} | {time:YYYY-MM-DD HH:mm:ss} | {name:<20} | {line} | {message}",
       "rotation": "1 MB",
       "compression": "zip",
       "backtrace": true,
       "diagnose": true,
       "level": "INFO",
-      "filter": "db"
+      "filter": "conf"
     },
     {
       "sink": "logs/func_log.log",

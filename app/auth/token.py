@@ -3,6 +3,7 @@ from datetime import datetime, timedelta, timezone
 from jose import JWTError, jwt
 
 from app.config import settings
+from app.config.logger import config_logger, func_logger, logger
 from app.schemas import token_schema
 
 
@@ -10,35 +11,34 @@ class AccessToken:
     def __init__(self, algorithm="HS256", time_expire=30, secret_key=None):
         self.algorithm = algorithm
         self.time_expire = time_expire
-        self.secret_key = settings.SECRET_KEY
+        self.secret_key = secret_key or settings.SECRET_KEY
         
-    @staticmethod    
-    def create_access_token(data: dict, expires_delta: timedelta|None=None, algorithm="HS256", time_expire=30, secret_key=None):
+    def create_access_token(self, data: dict, expires_delta: timedelta|None=None):
         to_encode = data.copy()
         if expires_delta:
             expire = datetime.now(timezone.utc) + expires_delta
         else:
-            expire = datetime.now(timezone.utc) + timedelta(minutes=time_expire)
+            expire = datetime.now(timezone.utc) + timedelta(minutes=self.time_expire)
 
         to_encode.update({"exp": expire})
         
-        key = secret_key or settings.SECRET_KEY
-        encoded_jwt = jwt.encode(to_encode, key, algorithm=algorithm)
+        encoded_jwt = jwt.encode(to_encode, self.secret_key, algorithm=self.algorithm)
         return encoded_jwt
 
     def verify_access_token(self, token: str, credentials_exception):
         try:
-            header = jwt.get_unverified_header(token)
-            algo = header.get("alg", self.algorithm)
-            
-            payload = jwt.decode(token, self.secret_key, algorithms=[algo])
+            payload = jwt.decode(
+                token,
+                self.secret_key,
+                algorithms=[self.algorithm]
+            )
             username = payload.get("sub")
-            if username is None: 
+            if username is None:
                 raise credentials_exception
-            
-            token_data = token_schema.TokenData(username=username, secret_key=self.secret_key)
+            func_logger.info("User Authenticated")
+
+            return token_schema.TokenData(username=username)
         
-        except JWTError:
+        except JWTError as e:
+            print(f"JWT Error: {e}") 
             raise credentials_exception
-        
-        return token_data

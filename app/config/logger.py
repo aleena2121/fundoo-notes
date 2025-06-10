@@ -5,13 +5,12 @@ from loguru import logger
 
 
 class Logger:
-
     @staticmethod
     def initialize_from_json(config_path="logger_config.json"):
         logger.remove()
         
-        def db_filter(record):
-            return record.get("extra", {}).get("db", False)
+        def config_filter(record):
+            return record.get("extra", {}).get("conf", False)
         
         def func_filter(record):
             return record.get("extra", {}).get("func", False)
@@ -22,9 +21,13 @@ class Logger:
 
         for handler in config["handlers"]:
             filter_name = handler.pop("filter", None)
-            filter_func = {"db": db_filter,"func": func_filter}.get(filter_name)
+            filter_func = {"conf": config_filter, "func": func_filter}.get(filter_name)
             
             logger.add(**handler, filter=filter_func)
 
         logger.info("Logger initialized from JSON config.")
         return logger
+
+config_logger = Logger.initialize_from_json().bind(conf=True)
+func_logger = Logger.initialize_from_json().bind(func=True)
+

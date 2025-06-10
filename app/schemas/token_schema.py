@@ -12,7 +12,7 @@ class LoginRequest(BaseModel):
 class TokenData(BaseModel):
     user_id: Optional[int] = None
     username: Optional[str] = None
-    secret_key: str
+    # secret_key: str
     
 class TokenResponse(BaseModel):
     access_token: str

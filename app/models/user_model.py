@@ -18,3 +18,4 @@ class User(Base):
     dob: Mapped[date]
     created_at: Mapped[datetime] = mapped_column(default=datetime.now)
     gender: Mapped[enum.GenderEnum] = mapped_column(SQLEnum(enum.GenderEnum, name="gender_enum"))
+    secret_key: Mapped[str]
