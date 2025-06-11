@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends, status
+from datetime import datetime
+from fastapi import APIRouter, Depends, BackgroundTasks, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
@@ -14,6 +15,8 @@ from app.utils.exceptions import (DatabaseIntegrityError,
                                   UsernameAlreadyExistsException)
 from app.utils.generate_key import generate_key
 from app.utils.hashing import Hash
+from app.utils.email_verification import generate_verification_token, verify_email_token
+from app.utils.email import send_verification_email
 
 login_router = APIRouter(tags=['Login'])
 sign_up_router = APIRouter(tags=['SignUp'])
@@ -41,25 +44,48 @@ def login(request: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(
         raise DatabaseIntegrityError(detail="Database error during login")
 
 
-@sign_up_router.post("/", status_code=status.HTTP_201_CREATED, response_model=user_schema.ShowUser)
-def sign_up(request: user_schema.User, db: Session = Depends(get_db)):
-    try:
-        existing_user = db.query(user_model.User).filter(
-            user_model.User.username == request.username
-        ).first()
-        if existing_user:
-            raise UsernameAlreadyExistsException(username=request.username)
+@sign_up_router.post("/signup")
+async def sign_up(request: user_schema.User, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
+    if db.query(user_model.User).filter(
+        user_model.User.username == request.username
+    ).first():
+        raise HTTPException(status_code=400, detail="Email already registered")
+    
+    secret_key = generate_key(request.username)
+    
+    new_user = user_model.User(
+        name=request.name,
+        username=request.username,
+        password=Hash.bcrypt(request.password),
+        dob=request.dob,
+        gender=request.gender,
+        secret_key=secret_key,
+        is_verified=False
+    )
+    
+   
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
 
-        user_data = request.model_dump(exclude_unset=True)
-        user_data["password"] = Hash.bcrypt(request.password)
-        user_data["secret_key"] = generate_key(request.name)
+    verification_token = generate_verification_token(
+        username=new_user.username,
+        secret_key=new_user.secret_key
+    )
+    
+    background_tasks.add_task(
+        send_verification_email,
+        email=new_user.username,
+        token=verification_token
+    )
+    
+    return {"message": "Verification email sent"}
 
-        new_user = user_model.User(**user_data)
-        db.add(new_user)
-        db.commit()
-        db.refresh(new_user)
-        return new_user
-
-    except SQLAlchemyError:
-        db.rollback()
-        raise DatabaseIntegrityError(detail="Failed to create user")
+@sign_up_router.get("/verify-email")
+async def verify_email(token: str, db: Session = Depends(get_db)):
+    result = verify_email_token(token, db)
+    
+    if result["status"] == "verified":
+        return {"message": "Email verification successful! You can now login.", "username": result["user"].username}
+    else:
+        raise HTTPException(status_code=400, detail="Verification failed")

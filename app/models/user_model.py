@@ -19,3 +19,4 @@ class User(Base):
     created_at: Mapped[datetime] = mapped_column(default=datetime.now)
     gender: Mapped[enum.GenderEnum] = mapped_column(SQLEnum(enum.GenderEnum, name="gender_enum"))
     secret_key: Mapped[str]
+    is_verified: Mapped[bool] = mapped_column(default=False)

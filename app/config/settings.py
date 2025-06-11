@@ -23,3 +23,10 @@ ALGORITHM = "HS256"
 
 UVICORN_HOST = (get_required_env("UVICORN_HOST"))
 UVICORN_PORT = int(get_required_env("UVICORN_PORT"))
+
+SMTP_SERVER=get_required_env("SMTP_SERVER")
+SMTP_PORT=int(get_required_env("SMTP_PORT"))
+SMTP_USERNAME=get_required_env("SMTP_USERNAME")
+SMTP_PASSWORD=get_required_env("SMTP_PASSWORD")
+BACKEND_URL=get_required_env("BACKEND_URL")
+EMAIL_FROM=get_required_env("EMAIL_FROM")

@@ -21,7 +21,7 @@ def get_current_user(
     )
     
     try:
-        unverified = jwt.get_unverified_claims(token)
+        unverified = jwt.decode(token, options={"verify_signature": False})
         username = unverified.get("sub")
         if not username:
             raise credentials_exception
