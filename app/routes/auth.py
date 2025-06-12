@@ -1,5 +1,5 @@
 from datetime import datetime
-from fastapi import APIRouter, Depends, BackgroundTasks, HTTPException
+from fastapi import APIRouter, Depends, BackgroundTasks, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
@@ -44,7 +44,7 @@ def login(request: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(
         raise DatabaseIntegrityError(detail="Database error during login")
 
 
-@sign_up_router.post("/signup")
+@sign_up_router.post("/signup", status_code=status.HTTP_201_CREATED)
 async def sign_up(request: user_schema.User, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     if db.query(user_model.User).filter(
         user_model.User.username == request.username
@@ -79,7 +79,7 @@ async def sign_up(request: user_schema.User, background_tasks: BackgroundTasks, 
         token=verification_token
     )
     
-    return {"message": "Verification email sent"}
+    return {"message": "User Created, Verification email sent", "payload": new_user, "status_code": 201}
 
 @sign_up_router.get("/verify-email")
 async def verify_email(token: str, db: Session = Depends(get_db)):
