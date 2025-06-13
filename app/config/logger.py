@@ -8,26 +8,26 @@ class Logger:
     @staticmethod
     def initialize_from_json(config_path="logger_config.json"):
         logger.remove()
-        
+
         def config_filter(record):
             return record.get("extra", {}).get("conf", False)
-        
+
         def func_filter(record):
             return record.get("extra", {}).get("func", False)
 
         abs_path = os.path.join(os.path.dirname(__file__), config_path)
-        with open(abs_path, 'r') as f:
+        with open(abs_path, "r") as f:
             config = json.load(f)
 
         for handler in config["handlers"]:
             filter_name = handler.pop("filter", None)
             filter_func = {"conf": config_filter, "func": func_filter}.get(filter_name)
-            
+
             logger.add(**handler, filter=filter_func)
 
         logger.info("Logger initialized from JSON config.")
         return logger
 
+
 config_logger = Logger.initialize_from_json().bind(conf=True)
 func_logger = Logger.initialize_from_json().bind(func=True)
-

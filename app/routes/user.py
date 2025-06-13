@@ -7,14 +7,19 @@ from app.config.logger import config_logger, func_logger
 from app.database import get_db
 from app.models import user_model
 from app.schemas import user_schema
-from app.utils.exceptions import (DatabaseIntegrityError,
-                                  PermissionDeniedException,
-                                  UserNotFoundException)
+from app.utils.exceptions import (
+    DatabaseIntegrityError,
+    PermissionDeniedException,
+    UserNotFoundException,
+)
 from app.utils.hashing import Hash
 
 router = APIRouter(prefix="/user", tags=["Users"])
 
-@router.get("/{id}", status_code=status.HTTP_200_OK, response_model=user_schema.ShowUser)
+
+@router.get(
+    "/{id}", status_code=status.HTTP_200_OK, response_model=user_schema.ShowUser
+)
 def get_user(id: int, db: Session = Depends(get_db)):
     try:
         user = db.query(user_model.User).filter(user_model.User.id == id).first()
@@ -33,7 +38,7 @@ def update_details(
     id: int,
     request: user_schema.UpdateUser,
     db: Session = Depends(get_db),
-    current_user=Depends(get_current_user)
+    current_user=Depends(get_current_user),
 ):
     try:
         user = db.query(user_model.User).filter(user_model.User.id == id).first()
@@ -65,9 +70,7 @@ def update_details(
 
 @router.delete("/{id}", status_code=status.HTTP_200_OK)
 def delete_user(
-    id: int,
-    db: Session = Depends(get_db),
-    current_user=Depends(get_current_user)
+    id: int, db: Session = Depends(get_db), current_user=Depends(get_current_user)
 ):
     try:
         user = db.query(user_model.User).filter(user_model.User.id == id).first()

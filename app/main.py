@@ -8,10 +8,12 @@ from app.utils.exceptions import RequiredEnvVarError
 
 if __name__ == "__main__":
     try:
-        uvicorn.run("app.f_api:app", 
-                    host=settings.UVICORN_HOST, 
-                    port=settings.UVICORN_PORT, 
-                    reload= True)
+        uvicorn.run(
+            "app.f_api:app",
+            host=settings.UVICORN_HOST,
+            port=settings.UVICORN_PORT,
+            reload=True,
+        )
     except RequiredEnvVarError as e:
         print(f"Configuration error: {str(e)}", file=sys.stderr)
         sys.exit(1)

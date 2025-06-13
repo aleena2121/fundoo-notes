@@ -9,7 +9,7 @@ def send_verification_email(email: str, token: str):
     try:
         if not all([SMTP_SERVER, SMTP_PORT, SMTP_USERNAME, SMTP_PASSWORD]):
             raise ValueError("SMTP settings are incomplete")
-        
+
         msg = MIMEText(f"Verify your email: {BACKEND_URL}/verify-email?token={token}")
         msg["Subject"] = "Verify Your Email"
         msg["From"] = EMAIL_FROM
@@ -23,7 +23,7 @@ def send_verification_email(email: str, token: str):
             server.login(SMTP_USERNAME, SMTP_PASSWORD)
             server.send_message(msg)
             func_logger.info(f"Verification email sent to {email}")
-            
+
     except smtplib.SMTPAuthenticationError as e:
         func_logger.error(e)
         raise
