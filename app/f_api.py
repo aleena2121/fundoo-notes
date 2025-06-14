@@ -9,6 +9,7 @@ from app.models.notes_model import Notes
 from app.routes.auth import login_router, sign_up_router
 from app.routes.notes import notes_router
 from app.routes.user import router as user_router
+from app.routes.labels import label_router
 
 
 @asynccontextmanager
@@ -29,3 +30,4 @@ app.include_router(sign_up_router)
 app.include_router(login_router)
 app.include_router(user_router)
 app.include_router(notes_router)
+app.include_router(label_router)

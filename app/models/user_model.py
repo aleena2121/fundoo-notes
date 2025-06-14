@@ -1,5 +1,5 @@
 from datetime import date, datetime
-from typing import Optional
+from typing import List, Optional
 
 from sqlalchemy.dialects.postgresql import ENUM as SQLEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -23,4 +23,13 @@ class User(Base):
     secret_key: Mapped[str]
     is_verified: Mapped[bool] = mapped_column(default=False)
 
-    notes = relationship("Notes", back_populates="creator")
+    notes: Mapped[List["Notes"]] = relationship(
+        "Notes", 
+        back_populates="creator",
+        cascade="all, delete-orphan" 
+    )
+    labels: Mapped[List["Labels"]] = relationship(
+        "Labels", 
+        back_populates="creator",
+        cascade="all, delete-orphan"  
+    )

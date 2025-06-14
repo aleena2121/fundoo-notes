@@ -44,8 +44,8 @@ def login(
         except Exception:
             raise TokenCreationError(detail="Failed to generate authentication token")
 
-    except SQLAlchemyError:
-        raise DatabaseIntegrityError(detail="Database error during login")
+    except SQLAlchemyError as e:
+        raise DatabaseIntegrityError(detail=f"Database error during login, {e}")
 
 
 @sign_up_router.post("/signup", status_code=status.HTTP_201_CREATED)

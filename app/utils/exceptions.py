@@ -58,9 +58,33 @@ class RequiredEnvVarError(Exception):
         self.var_name = var_name
 
 
-class TitleAlreadyExistsException(Exception):
+class TitleAlreadyExistsException(HTTPException):
     def __init__(self, title: str):
         super().__init__(
             status_code=status.HTTP_409_CONFLICT,
             detail=f"Note with title: {title} already exists!!",
+        )
+
+
+class LabelAlreadyExistsException(HTTPException):
+    def __init__(self, title: str):
+        super().__init__(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=f"Label with title: {title} already exists!!",
+        )
+
+
+class LabelRequiredException(HTTPException):
+    def __init__(self):
+        super().__init__(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=f"At least one Label required!!",
+        )
+
+
+class LabelDoesNotExistException(HTTPException):
+    def __init__(self, title: str):
+        super().__init__(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Label with name {title} does not exist, create the label to continue!!",
         )

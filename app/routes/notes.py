@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends, status
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 
 from app.auth.oauth2 import get_current_user
 from app.database import get_db
-from app.models import notes_model
+from app.models import notes_model, labels_model
 from app.schemas import notes_schema
-from app.utils.exceptions import TitleAlreadyExistsException
+from app.utils.exceptions import TitleAlreadyExistsException, LabelDoesNotExistException, LabelRequiredException
 from app.config.logger import func_logger
 
 notes_router = APIRouter(tags=["Notes"], prefix="/notes")
@@ -19,29 +19,50 @@ def create_notes(
 ):
     if (
         db.query(notes_model.Notes)
-        .filter(notes_model.Notes.title == request.title)
+        .filter(notes_model.Notes.title == request.title,
+            notes_model.Notes.user_id == current_user.id)
         .first()
     ):
         raise TitleAlreadyExistsException(request.title)
-    new_note = notes_model.Notes(**request.model_dump())
+    
+    if len(request.labels) == 0:
+        raise LabelRequiredException()
+    
+    label_objs = db.query(labels_model.Labels).filter(
+        labels_model.Labels.title.in_(request.labels),
+        labels_model.Labels.user_id == current_user.id
+    ).all()
+
+    if len(label_objs) != len(request.labels):
+        found_titles = {label.title for label in label_objs}
+        missing = [l for l in request.labels if l not in found_titles]
+        raise LabelDoesNotExistException(", ".join(missing))
+
+
+    new_note = notes_model.Notes(**request.model_dump(exclude={"labels"}))
     new_note.user_id = current_user.id
+    new_note.labels = label_objs
     db.add(new_note)
     db.commit()
     db.refresh(new_note)
+    
+    response_data = notes_schema.NotesResponse.model_validate(new_note)
+    
     func_logger.info(f"Note with title {request.title} created.")
     return {
         "message": "Note created",
-        "payload": new_note,
+        "payload": response_data,
         "status_code": status.HTTP_201_CREATED,
     }
 
 
 @notes_router.get("/")
-def get_all_note(
+def get_all_notes(
     db: Session = Depends(get_db), current_user=Depends(get_current_user)
 ):
     notes = (
         db.query(notes_model.Notes)
+        .options(selectinload(notes_model.Notes.labels))
         .filter(
             notes_model.Notes.user_id == current_user.id
         )
@@ -66,6 +87,7 @@ def get_note_by_id(
 ):
     note = (
         db.query(notes_model.Notes)
+        .options(selectinload(notes_model.Notes.labels))
         .filter(
             notes_model.Notes.id == id, notes_model.Notes.user_id == current_user.id
         )
@@ -131,7 +153,23 @@ def update_note(
             "payload": "",
             "status_code": status.HTTP_404_NOT_FOUND,
         }
-    updated_note = request.model_dump(exclude_unset=True)
+    if hasattr(request, 'labels') and request.labels is not None:
+        if len(request.labels) == 0:
+            raise LabelRequiredException()
+        
+        label_objs = db.query(labels_model.Labels).filter(
+            labels_model.Labels.title.in_(request.labels),
+            labels_model.Labels.user_id == current_user.id
+        ).all()
+
+        if len(label_objs) != len(request.labels):
+            found_titles = {label.title for label in label_objs}
+            missing = [l for l in request.labels if l not in found_titles]
+            raise LabelDoesNotExistException(", ".join(missing))
+        
+        note.labels = label_objs
+    
+    updated_note = request.model_dump(exclude_unset=True, exclude={"labels"})
     for key, value in updated_note.items():
         setattr(note, key, value)
     db.commit()
