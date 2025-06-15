@@ -1,12 +1,12 @@
-from . import settings
+from app.config.settings import dbsettings
 
 
 class Settings:
-    DB_USER = settings.DB_USER
-    DB_PASSWORD = settings.DB_PASSWORD
-    DB_HOST = settings.DB_HOST
-    DB_PORT = settings.DB_PORT
-    DB_NAME = settings.DB_NAME
+    DB_USER = dbsettings.DB_USER
+    DB_PASSWORD = dbsettings.DB_PASSWORD
+    DB_HOST = dbsettings.DB_HOST
+    DB_PORT = dbsettings.DB_PORT
+    DB_NAME = dbsettings.DB_NAME
 
 
 class DBInitialize:

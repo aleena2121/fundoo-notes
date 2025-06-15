@@ -62,7 +62,7 @@ class TitleAlreadyExistsException(HTTPException):
     def __init__(self, title: str):
         super().__init__(
             status_code=status.HTTP_409_CONFLICT,
-            detail=f"Note with title: {title} already exists!!",
+            detail=f"Note with title: '{title}' already exists!!",
         )
 
 
@@ -70,7 +70,7 @@ class LabelAlreadyExistsException(HTTPException):
     def __init__(self, title: str):
         super().__init__(
             status_code=status.HTTP_409_CONFLICT,
-            detail=f"Label with title: {title} already exists!!",
+            detail=f"Label with title '{title}' already exists!!",
         )
 
 
@@ -86,5 +86,5 @@ class LabelDoesNotExistException(HTTPException):
     def __init__(self, title: str):
         super().__init__(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Label with name {title} does not exist, create the label to continue!!",
+            detail=f"Label with name '{title}' does not exist, create the label to continue!!",
         )

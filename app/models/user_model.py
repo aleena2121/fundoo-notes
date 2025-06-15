@@ -6,7 +6,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
 
-from . import enum
+from ..utils import enum
 
 
 class User(Base):

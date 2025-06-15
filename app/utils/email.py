@@ -2,25 +2,23 @@ import smtplib
 from email.mime.text import MIMEText
 
 from app.config.logger import func_logger
-from app.config.settings import *
+from app.config.settings import smtpSettings
 
 
 def send_verification_email(email: str, token: str):
     try:
-        if not all([SMTP_SERVER, SMTP_PORT, SMTP_USERNAME, SMTP_PASSWORD]):
+        if not all([smtpSettings.SMTP_SERVER, smtpSettings.SMTP_PORT, smtpSettings.SMTP_USERNAME, smtpSettings.SMTP_PASSWORD]):
             raise ValueError("SMTP settings are incomplete")
 
-        msg = MIMEText(f"Verify your email: {BACKEND_URL}/verify-email?token={token}")
+        msg = MIMEText(f"Verify your email: {smtpSettings.BACKEND_URL}/verify-email?token={token}")
         msg["Subject"] = "Verify Your Email"
-        msg["From"] = EMAIL_FROM
+        msg["From"] = smtpSettings.EMAIL_FROM
         msg["To"] = email
 
-        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
-            server.ehlo()
+        with smtplib.SMTP(smtpSettings.SMTP_SERVER, smtpSettings.SMTP_PORT) as server:
             server.starttls()
-            server.ehlo()
-            func_logger.debug(f"Attempting to login with username: {SMTP_USERNAME}")
-            server.login(SMTP_USERNAME, SMTP_PASSWORD)
+            func_logger.debug(f"Attempting to login with username: {smtpSettings.SMTP_USERNAME}")
+            server.login(smtpSettings.SMTP_USERNAME, smtpSettings.SMTP_PASSWORD)
             server.send_message(msg)
             func_logger.info(f"Verification email sent to {email}")
 

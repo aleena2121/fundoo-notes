@@ -3,7 +3,7 @@ from typing import Optional
 
 from pydantic import BaseModel
 
-from app.models.enum import GenderEnum
+from app.utils.enum import GenderEnum
 
 
 class User(BaseModel):
