@@ -82,7 +82,7 @@ def get_all_notes(
             "payload": cached_notes,
             "status_code": status.HTTP_200_OK,
         }
-    
+
     notes = (
         db.query(notes_model.Notes)
         .options(selectinload(notes_model.Notes.labels))
@@ -106,7 +106,7 @@ def get_all_notes(
 @notes_router.get("/{id}")
 def get_note_by_id(
     id: int, db: Session = Depends(get_db), current_user=Depends(get_current_user)
-):    
+):
     cache_key = f"note_{id}"
     cached_note = get_cache(cache_key)
 
@@ -116,7 +116,7 @@ def get_note_by_id(
             "payload": cached_note,
             "status_code": status.HTTP_200_OK,
         }
-    
+
     note = (
         db.query(notes_model.Notes)
         .options(selectinload(notes_model.Notes.labels))
@@ -147,7 +147,7 @@ def delete_note(
     )
     if not note:
         raise NoteNotFoundException(id)
-    
+
     r.delete(f"note_{id}")
     r.delete(f"recent_notes_user_{current_user.id}")
 
@@ -213,9 +213,7 @@ def update_note(
 
 
 @notes_router.get("/extend-expiry/{id}")
-def extend_expiry(
-    id: int, db: Session = Depends(get_db)
-):
+def extend_expiry(id: int, db: Session = Depends(get_db)):
     note = db.query(notes_model.Notes).filter(notes_model.Notes.id == id).first()
 
     if not note:
@@ -224,7 +222,7 @@ def extend_expiry(
     if note.expiry_date.replace(tzinfo=timezone.utc) < current_time:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Cannot extend expired notes"
+            detail="Cannot extend expired notes",
         )
 
     note.expiry_date = datetime.now(timezone.utc) + timedelta(weeks=1)
@@ -234,4 +232,3 @@ def extend_expiry(
         "payload": note,
         "status_code": status.HTTP_200_OK,
     }
-    

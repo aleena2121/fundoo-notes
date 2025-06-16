@@ -19,7 +19,6 @@
 #     )
 
 
-
 from datetime import datetime
 from typing import TYPE_CHECKING, List
 
@@ -31,6 +30,7 @@ from app.models.association import note_label_association
 if TYPE_CHECKING:
     from app.models.user_model import User
     from app.models.notes_model import Notes
+
 
 class Labels(Base):
     __tablename__ = "labels"

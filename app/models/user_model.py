@@ -37,10 +37,6 @@
 #     labels: Mapped[List["Labels"]] = relationship("Labels", back_populates="creator")
 
 
-
-
-
-
 from datetime import date, datetime
 from typing import TYPE_CHECKING, List
 
@@ -53,6 +49,7 @@ from ..utils import enum
 if TYPE_CHECKING:
     from app.models.notes_model import Notes
     from app.models.labels_model import Labels
+
 
 class User(Base):
     __tablename__ = "users"
@@ -74,4 +71,3 @@ class User(Base):
     labels: Mapped[List["Labels"]] = relationship(
         "Labels", back_populates="creator", cascade="all, delete-orphan"
     )
-

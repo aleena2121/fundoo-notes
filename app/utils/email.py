@@ -51,9 +51,7 @@ def send_expiration_email(to: str, subject: str, body: str):
     try:
         with smtplib.SMTP(smtpSettings.SMTP_SERVER, smtpSettings.SMTP_PORT) as server:
             server.starttls()
-            func_logger.debug(
-                f"sending mail to {to}"
-            )
+            func_logger.debug(f"sending mail to {to}")
             server.login(smtpSettings.SMTP_USERNAME, smtpSettings.SMTP_PASSWORD)
             server.send_message(msg)
             func_logger.info(f"email sent to {to}")

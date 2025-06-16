@@ -40,7 +40,6 @@
 # app.add_middleware(RequestCountMiddleware)
 
 
-
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from app.config.db_initialize import DBInitialize
@@ -57,6 +56,7 @@ import app.models
 
 configure_mappers()
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     try:
@@ -68,6 +68,7 @@ async def lifespan(app: FastAPI):
         raise
     finally:
         config_logger.info("App shutdown")
+
 
 app = FastAPI(lifespan=lifespan)
 app.add_middleware(RequestCountMiddleware)

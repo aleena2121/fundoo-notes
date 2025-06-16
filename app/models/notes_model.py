@@ -26,7 +26,6 @@
 #     creator: Mapped["User"] = relationship("User", back_populates="notes")
 
 
-
 from datetime import datetime, timedelta, timezone
 from typing import TYPE_CHECKING, List
 
@@ -38,6 +37,7 @@ from app.models.association import note_label_association
 if TYPE_CHECKING:
     from app.models.labels_model import Labels
     from app.models.user_model import User
+
 
 class Notes(Base):
     __tablename__ = "notes"
