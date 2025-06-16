@@ -8,16 +8,20 @@ from app.utils.exceptions import LabelAlreadyExistsException
 from app.config.logger import func_logger
 
 
-label_router = APIRouter(
-    tags=["Labels"],
-    prefix='/labels'
-)
+label_router = APIRouter(tags=["Labels"], prefix="/labels")
+
 
 @label_router.post("/")
-def create_label(request: label_schema, db: Session = Depends(get_db), current_user = Depends(get_current_user)):
+def create_label(
+    request: label_schema,
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user),
+):
     if (
         db.query(label_model)
-        .filter(label_model.title == request.title, label_model.user_id == current_user.id)
+        .filter(
+            label_model.title == request.title, label_model.user_id == current_user.id
+        )
         .first()
     ):
         raise LabelAlreadyExistsException(request.title)
@@ -33,61 +37,81 @@ def create_label(request: label_schema, db: Session = Depends(get_db), current_u
         "status_code": status.HTTP_201_CREATED,
     }
 
+
 @label_router.get("/")
-def show_all_labels(db: Session = Depends(get_db), current_user = Depends(get_current_user)):
+def show_all_labels(
+    db: Session = Depends(get_db), current_user=Depends(get_current_user)
+):
     labels = db.query(label_model).filter(label_model.user_id == current_user.id).all()
     if not labels:
         return {
-        "message": "No Labels Found",
-        "payload": "",
-        "status_code": status.HTTP_404_NOT_FOUND,
-    }
+            "message": "No Labels Found",
+            "payload": "",
+            "status_code": status.HTTP_404_NOT_FOUND,
+        }
     return {
         "message": "Labels Found",
         "payload": labels,
         "status_code": status.HTTP_201_CREATED,
     }
 
+
 @label_router.put("/{id}")
-def update_label(request : label_schema, id: int, db: Session = Depends(get_db), current_user = Depends(get_current_user)):
-    label = db.query(label_model).filter(label_model.id == id, label_model.user_id == current_user.id).first()
+def update_label(
+    request: label_schema,
+    id: int,
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user),
+):
+    label = (
+        db.query(label_model)
+        .filter(label_model.id == id, label_model.user_id == current_user.id)
+        .first()
+    )
     if not label:
         return {
-        "message": "No Labels Found",
-        "payload": "",
-        "status_code": status.HTTP_404_NOT_FOUND,
-    }
+            "message": "No Labels Found",
+            "payload": "",
+            "status_code": status.HTTP_404_NOT_FOUND,
+        }
 
     updated_data = request.model_dump(exclude_unset=True)
     for key, value in updated_data.items():
         setattr(label, key, value)
-    
+
     db.commit()
     db.refresh(label)
-    
+
     func_logger.info(f"Label with id {id} updated")
-    
+
     return {
         "message": "Label Updated",
         "payload": label,
         "status_code": status.HTTP_201_CREATED,
     }
 
+
 @label_router.delete("/{id}")
-def delete_label(id: int, db: Session = Depends(get_db), current_user = Depends(get_current_user)):
-    label = db.query(label_model).filter(label_model.id == id, label_model.user_id == current_user.id).first()
+def delete_label(
+    id: int, db: Session = Depends(get_db), current_user=Depends(get_current_user)
+):
+    label = (
+        db.query(label_model)
+        .filter(label_model.id == id, label_model.user_id == current_user.id)
+        .first()
+    )
     if not label:
         return {
-        "message": "No Label Found",
-        "payload": "",
-        "status_code": status.HTTP_404_NOT_FOUND,
-    }
+            "message": "No Label Found",
+            "payload": "",
+            "status_code": status.HTTP_404_NOT_FOUND,
+        }
 
     db.delete(label)
     db.commit()
-    
+
     func_logger.info(f"Label with id {id} deleted")
-    
+
     return {
         "message": "Labels Found",
         "payload": "",

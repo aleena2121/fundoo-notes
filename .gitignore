@@ -3,3 +3,8 @@
 __pycache__
 logs/
 alembic.ini
+celerybeat-schedule.bak
+celerybeat-schedule.dat
+celerybeat-schedule.dir
+results
+transport

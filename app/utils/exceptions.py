@@ -88,3 +88,10 @@ class LabelDoesNotExistException(HTTPException):
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Label with name '{title}' does not exist, create the label to continue!!",
         )
+
+
+class NoteNotFoundException(HTTPException):
+    def __init__(self, id: int):
+        super().__init__(
+            status_code=status.HTTP_200_OK, detail=f"Note with id {id} not found!!"
+        )
