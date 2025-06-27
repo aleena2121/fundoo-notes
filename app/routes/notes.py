@@ -12,7 +12,7 @@ from app.utils.exceptions import (
     LabelRequiredException,
     NoteNotFoundException,
 )
-from app.utils.redis_client import get_cache, set_cache, r
+from app.utils.redis_client import get_cache, r
 from app.config.logger import func_logger
 
 notes_router = APIRouter(tags=["Notes"], prefix="/notes")

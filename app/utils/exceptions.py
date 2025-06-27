@@ -93,5 +93,13 @@ class LabelDoesNotExistException(HTTPException):
 class NoteNotFoundException(HTTPException):
     def __init__(self, id: int):
         super().__init__(
-            status_code=status.HTTP_200_OK, detail=f"Note with id {id} not found!!"
+            status_code=status.HTTP_200_OK, 
+            detail=f"Note with id {id} not found!!"
+        )
+
+class TooManyRequests(HTTPException):
+    def __init__(self, id: int):
+        super().__init__(
+             status_code=status.HTTP_429_TOO_MANY_REQUESTS, 
+             detail=f"Too many requests, Try after some time",
         )

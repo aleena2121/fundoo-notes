@@ -2,12 +2,13 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from sqlalchemy.orm import Session
-from datetime import datetime, timedelta
+from datetime import datetime
 from app.database import get_db
 from app.models import user_model
 from app.utils.redis_client import r
 from app.config.logger import func_logger
 from app.auth.token import AccessToken
+from app.utils.exceptions import TooManyRequests
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
@@ -21,10 +22,7 @@ async def rate_limit_user(user_id: int, limit: int = 20, window: int = 60):
         r.expire(redis_key, window)
 
     if current > limit:
-        raise HTTPException(
-            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-            detail=f"Too many requests, Try after some time",
-        )
+        raise TooManyRequests()
 
 
 async def get_current_user(
@@ -60,3 +58,4 @@ async def get_current_user(
     except JWTError as e:
         func_logger.error(f"JWT Error in get_current_user: {e}")
         raise credentials_exception
+ 
